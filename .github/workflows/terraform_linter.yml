@@ -2,12 +2,17 @@ name: Lint
 on:
   push:
     branches: [ main]
+    paths: ["terraform/**"]
   pull_request:
     branches: [ main]
+    paths: ["terraform/**"]
 
 jobs:
   tflint:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./terraform
 
     strategy:
       matrix:
