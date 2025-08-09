@@ -1,4 +1,4 @@
-terraform {
+terra form {
   required_providers {
     kubernetes = {
       source = "hashicorp/kubernetes"
