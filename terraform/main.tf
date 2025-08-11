@@ -15,13 +15,13 @@ terraform {
 provider "helm" {
   # Configuration options
   kubernetes = {
-    config_path = ".kube/config"
+    config_path = "../ansible/config"
     config_context = "default"
   }
 
 }
 provider "kubernetes" {
-  config_path = ".kube/config"
+  config_path = "../ansible/config"
   config_context = "default"
 }
 resource "kubernetes_namespace_v1" "example" {
@@ -34,6 +34,7 @@ resource "kubernetes_namespace_v1" "example" {
 resource "helm_release" "kubetail" {
   name  = "kubetail"
   chart = "../helm/kubetail"
+  namespace = "kiratech-test"
 }
 
 resource "kubernetes_manifest" "test-configmap" {

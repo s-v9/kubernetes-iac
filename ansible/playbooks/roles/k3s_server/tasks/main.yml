@@ -185,6 +185,12 @@
           register: mv_result
           changed_when:
             - mv_result.rc == 0
+        - name: Copy conf file to shared vagrant folder
+          ansible.builtin.copy:
+            src: /etc/rancher/k3s/k3s.yaml
+            dest: /vagrant/config
+            remote_src: true
+            mode: "u=rw,g=,o="
 
     - name: Get the token if randomly generated
       when: token is not defined
