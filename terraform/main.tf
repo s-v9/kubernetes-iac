@@ -35,6 +35,10 @@ resource "helm_release" "kubetail" {
   name  = "kubetail"
   chart = "../helm/kubetail"
 }
+
 resource "kubernetes_manifest" "test-configmap" {
   manifest = yamldecode(file("bench.yaml"))
+}
+resource "kubernetes_manifest" "test-srvc" {
+  manifest = yamldecode(file("kubetail_nodeport.yaml"))
 }
