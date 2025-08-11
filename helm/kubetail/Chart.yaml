@@ -9,10 +9,6 @@ keywords:
 - logging
 - private
 - realtime
-maintainers:
-- email: andres@kubetail.com
-  name: Andres Morey
-  url: https://github.com/kubetail-org
 name: kubetail
 type: application
 version: 0.13.4
