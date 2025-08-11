@@ -5,6 +5,10 @@ terraform {
       source = "hashicorp/helm"
       version = "3.0.2"
     }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.38.0"
+      }
   }
 }
 
@@ -16,7 +20,21 @@ provider "helm" {
   }
 
 }
+provider "kubernetes" {
+  config_path = ".kube/config"
+  config_context = "default"
+}
+resource "kubernetes_namespace_v1" "example" {
+  metadata {
+
+
+    name = "kiratech-test"
+  }
+}
 resource "helm_release" "kubetail" {
   name  = "kubetail"
   chart = "../helm/kubetail"
+}
+resource "kubernetes_manifest" "test-configmap" {
+  manifest = yamldecode(file("bench.yaml"))
 }
