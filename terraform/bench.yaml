@@ -28,7 +28,7 @@ spec:
       containers:
         - name: kube-bench
           image: docker.io/aquasec/kube-bench:latest
-          command: ["kube-bench",--v=0,--benchmark=k3s-cis-1.24, "run", "--targets", "master,controlplane,node,policies"]
+          command: ["kube-bench",--benchmark=k3s-cis-1.24, "run", "--targets", "master,controlplane,node,policies"]
           volumeMounts:
             - name: var-lib-cni
               mountPath: /var/lib/cni
