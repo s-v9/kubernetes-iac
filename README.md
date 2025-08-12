@@ -5,7 +5,7 @@
 Strumenti utilizzati:
 
 - **Vagrant** per la creazione delle VM  
-- **Ansible** per l’installazione di K3s  
+- **Ansible** per l’installazione di Kubernetes  
 - **Terraform** per la gestione delle risorse Kubernetes  
 - **Helm** per il deployment dell’applicazione  
 - **GitHub Actions** per la pipeline CI  
