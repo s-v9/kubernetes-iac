@@ -82,8 +82,8 @@ La pipeline CI è stata implementata con GitHub Actions, configurata per eseguir
 
  Copiare la repository
 ```bash
-git clone <https://github.com/s-v9/kubernetes-iac.git>
-cd <kubernetes-iac>
+git clone https://github.com/s-v9/kubernetes-iac.git
+cd kubernetes-iac
 ```
 Avviare vagrant per creare le vm e eseguire il playbook ansible
 ```bash
