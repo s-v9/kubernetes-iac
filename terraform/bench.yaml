@@ -59,6 +59,9 @@ spec:
               readOnly: true
               # /usr/local/mount-from-host/bin is mounted to access kubectl / kubelet, for auto-detecting the Kubernetes version.
               # You can omit this mount if you specify --version as part of the command.
+            - mountPath: /usr/local/mount-from-host/bin
+              name: usr-bin
+              readOnly: true
             - name: etc-cni-netd
               mountPath: /etc/cni/net.d/
               readOnly: true
