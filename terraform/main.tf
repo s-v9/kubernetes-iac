@@ -24,7 +24,7 @@ provider "kubernetes" {
   config_path = "../ansible/config"
   config_context = "default"
 }
-resource "kubernetes_namespace_v1" "example" {
+resource "kubernetes_namespace_v1" "kiratech-test-namespace" {
   metadata {
 
 
@@ -37,9 +37,9 @@ resource "helm_release" "kubetail" {
   namespace = "kiratech-test"
 }
 
-resource "kubernetes_manifest" "test-configmap" {
+resource "kubernetes_manifest" "kube-bench" {
   manifest = yamldecode(file("bench.yaml"))
 }
-resource "kubernetes_manifest" "test-srvc" {
+resource "kubernetes_manifest" "kubetail-nodeport" {
   manifest = yamldecode(file("kubetail_nodeport.yaml"))
 }
