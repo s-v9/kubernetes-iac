@@ -1,2 +1,87 @@
-# kubernetes-iac
-Challenge
+# Challenge: Provisioning Kubernetes Cluster with Infrastructure as Code
+
+## Scopo e descrizione della soluzione
+
+Strumenti utilizzati:
+
+- **Vagrant** per la creazione delle VM  
+- **Ansible** per l’installazione di K3s  
+- **Terraform** per la gestione delle risorse Kubernetes  
+- **Helm** per il deployment dell’applicazione  
+- **GitHub Actions** per la pipeline CI  
+
+---
+
+## Provisioning del cluster Kubernetes
+
+Cluster creato tramite [k3s-ansible](https://github.com/k3s-io/k3s-ansible), che include:
+
+- `Vagrantfile` per generare le VM  
+- Playbook Ansible per installare K3s  
+
+Modifiche apportate:
+
+### Vagrantfile
+
+- Cambiato il numero di VM per rispettare i requisiti (3 nodi: 1 server, 2 worker)  
+- Modificata modalità di provisioning da Ansible a `ansible_local` per compatibilità Windows  
+
+### Ansible playbook
+
+- Task aggiuntiva su role server per esportare il file `kubeconfig`, necessario per accesso al cluster via Terraform  
+
+---
+
+## Provisioning con Terraform e benchmark di sicurezza
+
+Terraform:
+
+- Configurazione dei provider Helm e Kubernetes  
+- Creazione del namespace `test`  
+- Esecuzione del benchmark di sicurezza CIS con [kube-bench](https://github.com/aquasecurity/kube-bench), tramite manifest Kubernetes  
+- Il manifest è stato configurato per essere eseguito sul node server, in quanto necessario al benchmark per eseguire correttamente i controlli  
+
+---
+
+## Deployment dell’applicazione Helm
+
+Applicazione scelta: **Kubetail**
+
+- Il deployment è stato effettuato tramite il provider Helm di Terraform, utilizzando l'Helm chart fornita da Kubetail  
+- La strategia di update `rollingUpdate` è già configurata nell'Helm chart fornita, quindi non sono state necessarie modifiche  
+- È stato aggiunto il deploy di un servizio `NodePort` per accesso alla webpage  
+
+---
+
+## Pipeline di Continuous Integration
+
+La pipeline CI è stata implementata con GitHub Actions, configurata per eseguire linting solo sui percorsi rilevanti in caso di `push` o `pull_request` su quei percorsi.
+
+### Linting tools
+
+| Tecnologia | Tool             | Link                                                                 |
+|------------|------------------|----------------------------------------------------------------------|
+| Terraform  | `tflint`         | [terraform-linters/tflint](https://github.com/terraform-linters/tflint) |
+| Ansible    | `ansible-lint`   | [ansible/ansible-lint](https://github.com/ansible/ansible-lint)         |
+| Helm       | `chart-testing`  | [helm/chart-testing-action](https://github.com/helm/chart-testing-action) |
+
+---
+
+ Copiare la repository
+```bash
+git clone <repository-url>
+cd <repository-folder>
+```
+Avviare vagrant per creare le vm e eseguire il playbook ansible
+```bash
+cd ansible
+vagrant up
+```
+Attendere la creazione delle VM e installazione di k3s
+```bash
+cd ../terraform
+terraform init
+terraform plan
+terraform apply
+```
+Il cluster e ora configurato e Kubetail e accessibile in locale a http://10.10.10.100:30080/
