@@ -13,13 +13,19 @@ Strumenti utilizzati:
 ---
 
 ## Provisioning del cluster Kubernetes
+Cluster creato utilizzando Vagrant e ansible
 
-Cluster creato tramite [k3s-ansible](https://github.com/k3s-io/k3s-ansible), che include:
+Nel particolare si è utilizzato [k3s-ansible](https://github.com/k3s-io/k3s-ansible), che include:
 
 - `Vagrantfile` per generare le VM  
-- Playbook Ansible per installare K3s  
+- Playbook Ansible per installare K3s
 
-Modifiche apportate:
+Vagrant è stato scelto in quanto ci permette di mantenere una struttura
+Iac anche per la creazione delle VM
+
+K3s è stato scelto principamente per ridurre il consumo di risorse. Inoltre non necessitiamo di un datastore etcd, 
+default per K8s, in quanto è presente un solo server node.
+### Modifiche apportate:
 
 ### Vagrantfile
 
@@ -30,6 +36,7 @@ Modifiche apportate:
 
 - Task aggiuntiva su role server per esportare il file `kubeconfig`, necessario per accesso al cluster via Terraform  
 
+
 ---
 
 ## Provisioning con Terraform e benchmark di sicurezza
@@ -37,7 +44,7 @@ Modifiche apportate:
 Terraform:
 
 - Configurazione dei provider Helm e Kubernetes  
-- Creazione del namespace `test`  
+- Creazione del namespace `kiratech-test`  
 - Esecuzione del benchmark di sicurezza CIS con [kube-bench](https://github.com/aquasecurity/kube-bench), tramite manifest Kubernetes  
 - Il manifest è stato configurato per essere eseguito sul node server, in quanto necessario al benchmark per eseguire correttamente i controlli  
 
@@ -45,11 +52,17 @@ Terraform:
 
 ## Deployment dell’applicazione Helm
 
-Applicazione scelta: **Kubetail**
+Applicazione scelta: **[Kubetail](https://github.com/kubetail-org/kubetail)**
 
-- Il deployment è stato effettuato tramite il provider Helm di Terraform, utilizzando l'Helm chart fornita da Kubetail  
+Kubetail è una dashboard di logging in tempo reale per Kubernetes che permette di visualizzare i log delle risorse tramite un'interfaccia web. 
+È composta da diversi servizi: i Cluster Agent, presenti su ogni nodo, raccolgono informazioni locali e le inviano al servizio Cluster API, 
+che le elabora e le rende disponibili al servizio Dashboard, responsabile della visualizzazione dei dati.
+- Il deployment è stato effettuato tramite il provider Helm di Terraform, utilizzando l'Helm chart fornita da Kubetail
+- Il deployment è stato effettuato nel namespace `kiratech-test` creato in precedenza
 - La strategia di update `rollingUpdate` è già configurata nell'Helm chart fornita, quindi non sono state necessarie modifiche  
 - È stato aggiunto il deploy di un servizio `NodePort` per accesso alla webpage  
+
+La webpage è resa disponibile in locale  e ci permette di visualizzare direttamente i log del benchmark di sicurezza
 
 ---
 
@@ -84,4 +97,4 @@ terraform init
 terraform plan
 terraform apply
 ```
-Il cluster e ora configurato e Kubetail e accessibile in locale a http://10.10.10.100:30080/
+Il cluster è ora configurato e Kubetail è accessibile in locale a http://10.10.10.100:30080/
