@@ -91,14 +91,19 @@ cd ansible
 vagrant up
 ```
 Attendere la creazione delle VM e installazione di k3s
-Modificare il config file generato in kubernetes-iac\ansible con l'ip del server.
+
+Modificare il config file generato in kubernetes-iac/ansible con l'ip del server.
 Nel nostro caso 10.10.10.100
 ```bash
+config file:
 - cluster:
-    certificate-authority-data: 
+    certificate-authority-data:***
     server: https://10.10.10.100:6443
+    ...
 ```
+Ora possiamo spostarci su terraform e avviare il resto dell'infrastruttura
 ```bash
+
 cd ../terraform
 terraform init
 terraform plan
